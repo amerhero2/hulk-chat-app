@@ -1,0 +1,7 @@
+# Ignore node_modules in client and api directories
+client-side/node_modules/
+api/node_modules/
+
+# Ignore environment files
+client-side/.env
+api/.env
