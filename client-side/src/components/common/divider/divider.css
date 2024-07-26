@@ -1,0 +1,21 @@
+.HULK-divider{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.HULK-divider span{
+    color: #35a8a2;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.HULK-divider hr{
+    flex: 1;
+    background-color: #35a8a2;
+    height: 1px;
+    border: none;
+    margin: 0;
+}

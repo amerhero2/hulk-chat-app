@@ -1,0 +1,41 @@
+.HULK-register-form-wrapper{
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background-color: rgba(255,255,255, 0.8);
+    border-radius: 4px;
+    gap: 12px;
+}
+
+.HULK-register-form-wrapper .HULK-register-form-namefields{
+    display: flex;
+    gap: 12px;
+}
+
+.HULK-register-form-namefields .HULK-input-wrapper{
+    display: flex;
+    flex: 1;
+}
+
+.HULK-register-form-wrapper h2{
+    margin: 10px 0px;
+}
+
+.HULK-register-form-wrapper > form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.HULK-register-form-wrapper .HULK-register-form-account-question{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media screen and (min-width: 760px) {
+    .HULK-register-form-wrapper{
+      min-width: 500px;
+    }
+  }
+
