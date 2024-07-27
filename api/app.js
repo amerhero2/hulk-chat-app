@@ -38,7 +38,9 @@ io.on("connection", (socket) => {
     socket.join(room);
     console.log(`User joined room: ${room}`);
 
-    socket.broadcast.to(room).emit("message", "User has joined the room");
+    socket.broadcast.to(room).emit("message", {
+      message: `${socket.user.firstName} ${socket.user.lastName} has joined the room`,
+    });
   });
 
   socket.on("message", (data) => {
@@ -46,7 +48,7 @@ io.on("connection", (socket) => {
 
     console.log("USER :::::", socket.user);
     console.log(`Message to room ${room}: ${message}`);
-    io.to(room).emit("message", { message, room });
+    io.to(room).emit("message", { message, room, user: socket.user });
   });
 
   socket.on("disconnect", () => {

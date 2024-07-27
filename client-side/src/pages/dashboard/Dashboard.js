@@ -9,6 +9,7 @@ import {
   setActiveRoom,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 const rooms = [
   { id: 1, label: "My test room" },
@@ -35,13 +36,19 @@ const Dashboard = () => {
       // Listen for messages from the room
       socket.on("message", (newMessage) => {
         console.log("NEW MESSAGE", newMessage);
+
+        dispatch(
+          addSingleMessage({
+            message: newMessage,
+          })
+        );
       });
 
       return () => {
         socket.off("message");
       };
     }
-  }, [socket, activeRoom]);
+  }, [socket, activeRoom, dispatch]);
 
   const activeRoomHandler = ({ id }) => {
     dispatch(setActiveRoom({ id }));
@@ -51,15 +58,6 @@ const Dashboard = () => {
     socket.emit("message", { room: activeRoom, message: inputValue });
 
     console.log("user", user);
-    dispatch(
-      addSingleMessage({
-        message: {
-          id: Math.random(),
-          userId: user?.id,
-          message: inputValue,
-        },
-      })
-    );
     setInputValue("");
   };
 
@@ -117,30 +115,23 @@ const Dashboard = () => {
       </div>
       <div className="HULK-chat-main-content">
         <div className="HULK-chat-main-content-messages">
-          <div className="HULK-message my-message">Your message goes here</div>
-          <div className="HULK-message other-message">
-            Other's message goes here
-          </div>
-          <div className="HULK-message my-message">
-            Another one of your dfasdfas df as df as df asd fa sdf as df as df
-            as dsa sadf a s asdfa sdf asdf as df asdf as df sadf asd fas fasdf
-            as df asdf as dmessages
-          </div>
-          <div className="HULK-message other-message">
-            Another message from others
-          </div>
-
           {messages.map((msg) => {
-            return (
+            return msg.user?.id ? (
               <div
                 key={msg.id}
                 className={classNames("HULK-message", {
-                  "my-message": msg.userId === user?.id,
-                  "other-message": msg.userId !== user?.id,
+                  "my-message": msg.user?.id === user?.id,
+                  "other-message": msg.user?.id !== user?.id,
                 })}
               >
-                {msg.message}
+                <span className="HULK-message-user-info">
+                  {msg.user?.firstName} {msg.user?.lastName},{" "}
+                  {moment().calendar()}
+                </span>
+                <span className="HULK-message-content">{msg.message}</span>
               </div>
+            ) : (
+              <span className="HULK-join-leave-message">{msg.message}</span>
             );
           })}
         </div>
