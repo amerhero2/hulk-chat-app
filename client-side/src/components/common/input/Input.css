@@ -1,20 +1,20 @@
-.HULK-input-wrapper{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.HULK-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.HULK-input-wrapper .HULK-input-error-message{
-    color: red;
-    font-size: 14px;
+.HULK-input-wrapper .HULK-input-error-message {
+  color: red;
+  font-size: 14px;
 }
 .HULK-input-wrapper input {
-    height: 32px;
-    border: 1px solid #e4d8d8;
-    border-radius: 2px;
-    padding: 0 7px;
+  height: 32px;
+  border: 1px solid #e4d8d8;
+  border-radius: 2px;
+  padding: 0 7px;
 }
 
-.HULK-input-wrapper input:focus-visible{
-    outline: none;
+.HULK-input-wrapper input:focus-visible {
+  outline: none;
 }

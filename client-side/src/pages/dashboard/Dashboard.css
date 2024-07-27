@@ -1,89 +1,112 @@
-.HULK-chat{
-    display: flex;
-    height: calc(100vh - 75px);
-    background-color: rgb(248, 248, 248);
+.HULK-chat {
+  display: flex;
+  height: calc(100vh - 75px);
+  background-color: rgb(248, 248, 248);
 }
 
-.HULK-chat-side-content{
-    padding: 20px 45px;
-    min-width: 200px;
-    border-right: 1px solid rgb(225, 219, 219);
+.HULK-chat-side-content {
+  padding: 20px 45px;
+  min-width: 200px;
+  border-right: 1px solid rgb(225, 219, 219);
 }
 
-.HULK-chat-main-content{
-    padding: 20px;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+.HULK-chat-main-content {
+  padding: 20px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
-.HULK-chat-main-content-messages{
-    flex:1;
+.HULK-chat-main-content-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  overflow: auto;
 }
 
-.HULK-chat-main-content-message-input{
-    display: flex;
-    gap: 12px;
-    width: 100%;
+.HULK-message {
+  max-width: 60%;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  display: inline-block;
 }
 
-.HULK-chat-main-content-message-input input{
-    padding: 10px;
-    border: 1px solid #e4d8d8;
-    border-radius: 4px;
-    flex:1;
+.my-message {
+  align-self: flex-end;
+  background-color: #008cba;
+}
+
+.other-message {
+  align-self: flex-start;
+  background-color: #35a8a2;
+}
+
+.HULK-chat-main-content-message-input {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.HULK-chat-main-content-message-input input {
+  padding: 10px;
+  border: 1px solid #e4d8d8;
+  border-radius: 4px;
+  flex: 1;
 }
 
 .HULK-chat-side-content-rooms-wrapper .HULK-button {
-    width: 100%;
-    margin-bottom: 10px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.HULK-chat-side-content-rooms{
-    display: flex;
-    margin-top: 10px;
-    flex-direction: column;
-    gap: 10px;
+.HULK-chat-side-content-rooms {
+  display: flex;
+  margin-top: 10px;
+  flex-direction: column;
+  gap: 10px;
 }
-.HULK-chat-side-content-rooms-room{
-    border: 1px solid rgb(226, 224, 224);
-    border-radius: 4px;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.HULK-chat-side-content-rooms-room-active{
-    background-color: #35a8a2;
-    border: 1px solid #35a8a2;
-    color: white;
+.HULK-chat-side-content-rooms-room {
+  border: 1px solid rgb(226, 224, 224);
+  border-radius: 4px;
+  padding: 5px;
+  cursor: pointer;
 }
 
-.HULK-chat-side-content-users-wrapper{
-    margin-top: 20px;
+.HULK-chat-side-content-rooms-room-active {
+  background-color: #35a8a2;
+  border: 1px solid #35a8a2;
+  color: white;
 }
 
-.HULK-chat-side-content-users{
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    gap: 5px;
+.HULK-chat-side-content-users-wrapper {
+  margin-top: 20px;
 }
 
-.HULK-chat-side-content-users-user{
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.HULK-chat-side-content-users {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  gap: 5px;
 }
 
-.HULK-chat-side-content-users-user-indicator{
-    width: 10px;
-    height: 10px;
-    border: 1px solid gray;
-    border-radius: 50%;
+.HULK-chat-side-content-users-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.HULK-chat-side-content-users-user-indicator-active{
-    border: none;
-    border: 1px solid #35a8a2;
-    background-color: #35a8a2;
+.HULK-chat-side-content-users-user-indicator {
+  width: 10px;
+  height: 10px;
+  border: 1px solid gray;
+  border-radius: 50%;
+}
+
+.HULK-chat-side-content-users-user-indicator-active {
+  border: none;
+  border: 1px solid #35a8a2;
+  background-color: #35a8a2;
 }

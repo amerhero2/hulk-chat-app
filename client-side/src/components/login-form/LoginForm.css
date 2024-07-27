@@ -1,31 +1,29 @@
-.HULK-login-form-wrapper{
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-    background-color: rgba(255,255,255, 0.8);
-    border-radius: 4px;
-    gap:12px
+.HULK-login-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  gap: 12px;
 }
 
-.HULK-login-form-wrapper h2{
-    margin: 10px 0px;
+.HULK-login-form-wrapper h2 {
+  margin: 10px 0px;
 }
 
 .HULK-login-form-wrapper > form {
-    display: flex;
-    flex-direction: column;
-    gap:12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.HULK-login-form-wrapper .HULK-login-form-account-question{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.HULK-login-form-wrapper .HULK-login-form-account-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 
 @media screen and (min-width: 760px) {
-    .HULK-login-form-wrapper{
-      min-width: 500px;
-    }
+  .HULK-login-form-wrapper {
+    min-width: 500px;
   }
-
+}
