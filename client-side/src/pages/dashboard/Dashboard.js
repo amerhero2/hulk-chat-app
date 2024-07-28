@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import RoomModal from "../../components/room-modal/roomModal";
+import { getUserDetails } from "../../redux/actions/authActions";
 
 const users = [
   { id: 1, firstName: "Amer", lastName: "Hero" },
@@ -30,6 +31,10 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, [dispatch]);
 
   useEffect(() => {
     if (socket && activeRoom) {
@@ -66,17 +71,11 @@ const Dashboard = () => {
   const handleSendMessage = () => {
     socket.emit("message", { room: activeRoom?.id, message: inputValue });
     setInputValue("");
-    if (messagesContainerRef) {
-      messagesContainerRef.current?.scrollTo({
-        top: messagesContainerRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (messagesContainerRef.current) {
+      if (messagesContainerRef.current && activeRoom) {
         const { scrollTop } = messagesContainerRef.current;
         if (scrollTop === 0 && hasMoreMessages) {
           dispatch(
@@ -153,15 +152,6 @@ const Dashboard = () => {
                   key={user?.id}
                   className="HULK-chat-side-content-users-user"
                 >
-                  <div
-                    className={classNames(
-                      "HULK-chat-side-content-users-user-indicator",
-                      {
-                        "HULK-chat-side-content-users-user-indicator-active":
-                          user.id === 1,
-                      }
-                    )}
-                  />
                   <div>
                     {user.firstName} {user.lastName}
                   </div>
@@ -175,7 +165,14 @@ const Dashboard = () => {
         {activeRoom && (
           <div className="HULK-chat-main-content-room-header">
             <span>Current room: {activeRoom.label}</span>
-            <Button style={{ backgroundColor: "#F96C6C" }}>Leave room</Button>
+            <Button
+              style={{ backgroundColor: "#F96C6C" }}
+              onClick={() => {
+                activeRoomHandler({ room: null });
+              }}
+            >
+              Leave room
+            </Button>
           </div>
         )}
         <div
@@ -220,6 +217,12 @@ const Dashboard = () => {
             value={inputValue}
             placeholder="Type a message here..."
             disabled={!activeRoom}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSendMessage();
+              }
+            }}
           />
           <Button
             onClick={() => {
