@@ -4,6 +4,7 @@ const cors = require("cors");
 const http = require("http");
 const socketIo = require("socket.io");
 const sequelize = require("./db");
+const passport = require("passport");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
@@ -13,8 +14,10 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(cors());
+app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+require("./config/passport");
 
 app.get("/", (req, res) => {
   res.send("Server running!");

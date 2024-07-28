@@ -1,7 +1,8 @@
-require('dotenv').config();
-const passport = require('passport');
-const { Strategy, ExtractJwt } = require('passport-jwt');
-const User = require('../models/User');
+require("dotenv").config();
+const JwtStrategy = require("passport-jwt").Strategy,
+  ExtractJwt = require("passport-jwt").ExtractJwt;
+const User = require("../models/User");
+const passport = require("passport");
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -9,7 +10,7 @@ const options = {
 };
 
 passport.use(
-  new Strategy(options, async (jwt_payload, done) => {
+  new JwtStrategy(options, async (jwt_payload, done) => {
     try {
       const user = await User.findByPk(jwt_payload.id);
       if (user) {
