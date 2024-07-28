@@ -51,6 +51,12 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("createRoom", (newRoom) => {
+    socket.broadcast.emit("roomCreated", {
+      room: newRoom.room,
+    });
+  });
+
   socket.on("message", async (data) => {
     const { room, message } = data;
 

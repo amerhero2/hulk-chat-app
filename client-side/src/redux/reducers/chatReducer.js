@@ -11,6 +11,7 @@ import {
   SET_ROOM_MESSAGES,
   GET_USERS_SUCCESS,
   SET_GET_USERS_LOADING,
+  ADD_SINGLE_ROOM,
 } from "../actions/chatActions";
 
 const initialState = {
@@ -65,6 +66,12 @@ const chatReducer = (state = initialState, action) => {
         rooms: [...state.rooms, action.payload],
         activeRoom: action.payload,
         createRoomModalOpen: false,
+      };
+
+    case ADD_SINGLE_ROOM:
+      return {
+        ...state,
+        rooms: [...state.rooms, action.payload],
       };
 
     case SET_GET_ROOMS_LOADING:

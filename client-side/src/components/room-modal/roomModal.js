@@ -3,13 +3,21 @@ import "./roomModal.css";
 import Button from "../common/button/Button";
 import { createRoom } from "../../redux/actions/chatActions";
 import { useDispatch } from "react-redux";
+import { useWebSocket } from "../../contexts/WebSocketContext";
 
 const RoomModal = ({ isOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const dispatch = useDispatch();
+  const socket = useWebSocket();
 
   const handleAddRoom = () => {
-    dispatch(createRoom({ label: inputValue }));
+    dispatch(createRoom({ label: inputValue }))
+      .then((response) => {
+        socket.emit("createRoom", { room: response });
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
     setInputValue("");
   };
 

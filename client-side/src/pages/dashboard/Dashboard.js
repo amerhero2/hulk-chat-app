@@ -12,6 +12,7 @@ import {
   getRoomMessages,
   setRoomMessages,
   getUsers,
+  addSingleRoom,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -39,15 +40,21 @@ const Dashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (socket && activeRoom) {
-      socket.emit("joinRoom", activeRoom?.id);
+    if (socket) {
+      if (activeRoom) {
+        socket.emit("joinRoom", activeRoom?.id);
 
-      socket.on("message", (newMessage) => {
-        dispatch(
-          addSingleMessage({
-            message: { id: socket.id, ...newMessage },
-          })
-        );
+        socket.on("message", (newMessage) => {
+          dispatch(
+            addSingleMessage({
+              message: { id: socket.id, ...newMessage },
+            })
+          );
+        });
+      }
+
+      socket.on("roomCreated", (newRoom) => {
+        dispatch(addSingleRoom({ room: newRoom.room }));
       });
 
       return () => {
