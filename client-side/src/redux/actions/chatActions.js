@@ -15,6 +15,9 @@ export const SET_ROOM_MESSAGES_LOADING = "SET_ROOM_MESSAGES_LOADING";
 export const SET_ROOM_MESSAGES = "SET_ROOM_MESSAGES";
 export const GET_ROOM_MESSAGES_SUCCESS = "GET_ROOM_MESSAGES_SUCCESS";
 export const GET_ROOM_MESSAGES_FAILURE = "GET_ROOM_MESSAGES_FAILURE";
+export const GET_USERS_SUCCESS = "GET_USERS_SUCCESS";
+export const GET_USERS_FAILURE = "GET_USERS_FAILURE";
+export const SET_GET_USERS_LOADING = "SET_GET_USERS_LOADING";
 
 export const createRoom = ({ label }) => {
   return async (dispatch) => {
@@ -48,6 +51,29 @@ export const getRooms = () => {
     } catch (error) {
       dispatch({
         type: GET_ROOMS_FAILURE,
+        payload: error.response
+          ? error.response.data
+          : { message: "Network error" },
+      });
+    }
+  };
+};
+
+export const getUsers = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: SET_GET_USERS_LOADING,
+      payload: true,
+    });
+    try {
+      const response = await HulkAxios.get("/users");
+      dispatch({
+        type: GET_USERS_SUCCESS,
+        payload: response.data?.users,
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_USERS_FAILURE,
         payload: error.response
           ? error.response.data
           : { message: "Network error" },

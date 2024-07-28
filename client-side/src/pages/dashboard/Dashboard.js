@@ -11,6 +11,7 @@ import {
   getRooms,
   getRoomMessages,
   setRoomMessages,
+  getUsers,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -18,17 +19,17 @@ import RoomModal from "../../components/room-modal/roomModal";
 import { getUserDetails } from "../../redux/actions/authActions";
 import _ from "lodash";
 
-const users = [
-  { id: 1, firstName: "Amer", lastName: "Hero" },
-  { id: 2, firstName: "Amer", lastName: "Rohe" },
-  { id: 3, firstName: "Rohero", lastName: "Rosero" },
-];
-
 const Dashboard = () => {
   const socket = useWebSocket();
   const dispatch = useDispatch();
-  const { activeRoom, messages, rooms, createRoomModalOpen, hasMoreMessages } =
-    useSelector((state) => state.chat);
+  const {
+    activeRoom,
+    messages,
+    rooms,
+    createRoomModalOpen,
+    hasMoreMessages,
+    users,
+  } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef(null);
@@ -44,7 +45,7 @@ const Dashboard = () => {
       socket.on("message", (newMessage) => {
         dispatch(
           addSingleMessage({
-            message: newMessage,
+            message: { id: socket.id, ...newMessage },
           })
         );
       });
@@ -57,6 +58,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getRooms());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getUsers());
   }, [dispatch]);
 
   useEffect(() => {

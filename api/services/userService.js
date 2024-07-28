@@ -1,11 +1,11 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 async function createUser({ email, firstName, lastName, password }) {
   try {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      throw new Error('Email is already in use');
+      throw new Error("Email is already in use");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -22,4 +22,15 @@ async function createUser({ email, firstName, lastName, password }) {
   }
 }
 
-module.exports = { createUser };
+async function getUsers() {
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+    });
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = { createUser, getUsers };

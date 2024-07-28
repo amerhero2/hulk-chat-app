@@ -43,4 +43,18 @@ async function getUserDetails(req, res, next) {
     return res.status(500).json({ error: "User not found" });
   }
 }
-module.exports = { registerUser, getUserDetails };
+
+async function getUsers(req, res, next) {
+  try {
+    const users = await userService.getUsers();
+    return res.status(201).json({
+      message: "User registered successfully",
+      users,
+    });
+  } catch (error) {
+    console.error("Error getting users:", error);
+    next(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+module.exports = { registerUser, getUserDetails, getUsers };

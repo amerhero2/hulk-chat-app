@@ -9,16 +9,19 @@ import {
   SET_GET_ROOMS_LOADING,
   GET_ROOM_MESSAGES_SUCCESS,
   SET_ROOM_MESSAGES,
+  GET_USERS_SUCCESS,
+  SET_GET_USERS_LOADING,
 } from "../actions/chatActions";
 
 const initialState = {
   activeRoom: null,
   rooms: [],
   roomsLoading: false,
-  users: false,
   messages: [],
   hasMoreMessages: false,
   createRoomModalOpen: false,
+  users: [],
+  usersLoading: false,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -89,6 +92,19 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         messages: newMessagesList,
         hasMoreMessages: action.payload.length < 20 ? false : true,
+      };
+
+    case SET_GET_USERS_LOADING:
+      return {
+        ...state,
+        usersLoading: action.payload,
+      };
+
+    case GET_USERS_SUCCESS:
+      console.log("action.payload", action.payload);
+      return {
+        ...state,
+        users: action.payload,
       };
 
     default:
