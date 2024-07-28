@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import RoomModal from "../../components/room-modal/roomModal";
 import { getUserDetails } from "../../redux/actions/authActions";
+import _ from "lodash";
 
 const users = [
   { id: 1, firstName: "Amer", lastName: "Hero" },
@@ -73,18 +74,18 @@ const Dashboard = () => {
     setInputValue("");
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (messagesContainerRef.current && activeRoom) {
-        const { scrollTop } = messagesContainerRef.current;
-        if (scrollTop === 0 && hasMoreMessages) {
-          dispatch(
-            getRoomMessages({ roomId: activeRoom.id, offset: messages.length })
-          );
-        }
+  const handleScroll = _.debounce(() => {
+    if (messagesContainerRef.current && activeRoom) {
+      const { scrollTop } = messagesContainerRef.current;
+      if (scrollTop === 0 && hasMoreMessages) {
+        dispatch(
+          getRoomMessages({ roomId: activeRoom.id, offset: messages.length })
+        );
       }
-    };
+    }
+  }, 300);
 
+  useEffect(() => {
     const container = messagesContainerRef.current;
     if (container) {
       container.addEventListener("scroll", handleScroll);
@@ -94,8 +95,9 @@ const Dashboard = () => {
       if (container) {
         container.removeEventListener("scroll", handleScroll);
       }
+      handleScroll.cancel();
     };
-  }, [dispatch, activeRoom, messages, hasMoreMessages]);
+  }, [dispatch, activeRoom, messages, hasMoreMessages, handleScroll]);
 
   useEffect(() => {
     if (messages.length <= 20) {
