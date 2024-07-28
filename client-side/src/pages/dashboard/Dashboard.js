@@ -7,15 +7,12 @@ import classNames from "classnames";
 import {
   addSingleMessage,
   setActiveRoom,
+  setCreateRoomModalOpen,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import RoomModal from "../../components/room-modal/roomModal";
 
-const rooms = [
-  { id: 1, label: "My test room" },
-  { id: 2, label: "My test two" },
-  { id: 3, label: "My test three" },
-];
 const users = [
   { id: 1, firstName: "Amer", lastName: "Hero" },
   { id: 2, firstName: "Amer", lastName: "Rohe" },
@@ -25,7 +22,9 @@ const users = [
 const Dashboard = () => {
   const socket = useWebSocket();
   const dispatch = useDispatch();
-  const { activeRoom, messages } = useSelector((state) => state.chat);
+  const { activeRoom, messages, rooms, createRoomModalOpen } = useSelector(
+    (state) => state.chat
+  );
   const { user } = useSelector((state) => state.auth);
   const [inputValue, setInputValue] = useState("");
 
@@ -65,8 +64,20 @@ const Dashboard = () => {
     <div className="HULK-chat">
       <div className="HULK-chat-side-content">
         <div className="HULK-chat-side-content-rooms-wrapper">
-          <Button>+ New room</Button>
+          <Button
+            onClick={() => {
+              dispatch(setCreateRoomModalOpen({ isOpen: true }));
+            }}
+          >
+            + New room
+          </Button>
           <Divider label="Rooms" />
+          <RoomModal
+            isOpen={createRoomModalOpen}
+            onClose={() => {
+              dispatch(setCreateRoomModalOpen({ isOpen: false }));
+            }}
+          />
           <div className="HULK-chat-side-content-rooms">
             {rooms.map((room) => {
               return (

@@ -3,13 +3,16 @@ import {
   SET_CHAT_ROOMS,
   SET_USERS_LIST,
   ADD_SINGLE_MESSAGE,
+  CREATE_ROOM_SUCCESS,
+  SET_CREATE_ROOM_MODAL_OPEN,
 } from "../actions/chatActions";
 
 const initialState = {
   activeRoom: null,
-  rooms: false,
+  rooms: [],
   users: false,
   messages: [],
+  createRoomModalOpen: false,
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -39,6 +42,20 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         messages,
+      };
+
+    case SET_CREATE_ROOM_MODAL_OPEN:
+      return {
+        ...state,
+        createRoomModalOpen: action.payload,
+      };
+
+    case CREATE_ROOM_SUCCESS:
+      return {
+        ...state,
+        rooms: [...state.rooms, action.payload],
+        activeRoom: action.payload,
+        createRoomModalOpen: false,
       };
 
     default:

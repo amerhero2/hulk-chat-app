@@ -6,6 +6,7 @@ const socketIo = require("socket.io");
 const sequelize = require("./db");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
+const roomRoutes = require("./routes/roomRoutes");
 const socketAuth = require("./middlewares/socketAuthMiddleware");
 
 const app = express();
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 });
 app.use("/", userRoutes);
 app.use("/", authRoutes);
+app.use("/", roomRoutes);
 
 const io = socketIo(server, {
   cors: {
