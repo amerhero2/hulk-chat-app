@@ -11,6 +11,10 @@ const roomRoutes = require("./routes/roomRoutes");
 const messagesRoutes = require("./routes/messagesRoutes");
 const socketAuth = require("./middlewares/socketAuthMiddleware");
 const Message = require("./models/Message");
+require("dotenv").config();
+
+const { createClient } = require("ioredis");
+const { createAdapter } = require("@socket.io/redis-adapter");
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +33,18 @@ app.use("/", authRoutes);
 app.use("/", roomRoutes);
 app.use("/", messagesRoutes);
 
+const redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOSTNAME}:6379`;
+const pubClient = createClient(redisUrl);
+const subClient = pubClient.duplicate();
+
+pubClient.on("connect", () => {
+  console.log("Publisher connected to Redis");
+});
+
+subClient.on("connect", () => {
+  console.log("Subscriber connected to Redis");
+});
+
 const io = socketIo(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -36,6 +52,9 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
+
+// Attach the adapter to Socket.IO
+io.adapter(createAdapter(pubClient, subClient));
 
 io.use(socketAuth);
 
