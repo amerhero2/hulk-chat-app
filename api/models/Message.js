@@ -1,5 +1,9 @@
-module.exports = (sequelize, DataTypes) => {
-  const Message = sequelize.define("Message", {
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db");
+
+const Message = sequelize.define(
+  "Message",
+  {
     message: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,12 +26,18 @@ module.exports = (sequelize, DataTypes) => {
         key: "id",
       },
     },
-  });
+  },
+  {
+    tableName: "messages",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
 
-  Message.associate = (models) => {
-    Message.belongsTo(models.User, { foreignKey: "user_id" });
-    Message.belongsTo(models.Room, { foreignKey: "room_id" });
-  };
-
-  return Message;
+Message.associate = (models) => {
+  Message.belongsTo(models.User, { foreignKey: "user_id" });
+  Message.belongsTo(models.Room, { foreignKey: "room_id" });
 };
+
+module.exports = Message;

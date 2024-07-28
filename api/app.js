@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const socketAuth = require("./middlewares/socketAuthMiddleware");
+const Message = require("./models/Message");
 
 const app = express();
 const server = http.createServer(app);
@@ -48,8 +49,10 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("message", (data) => {
+  socket.on("message", async (data) => {
     const { room, message } = data;
+
+    await Message.create({ message, userId: socket.user.id, roomId: room });
 
     console.log("USER :::::", socket.user);
     console.log(`Message to room ${room}: ${message}`);
