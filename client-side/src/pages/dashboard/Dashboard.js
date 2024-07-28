@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useWebSocket } from "../../contexts/WebSocketContext";
 import "./Dashboard.css";
 import Button from "../../components/common/button/Button";
@@ -9,6 +9,8 @@ import {
   setActiveRoom,
   setCreateRoomModalOpen,
   getRooms,
+  getRoomMessages,
+  setRoomMessages,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -23,20 +25,17 @@ const users = [
 const Dashboard = () => {
   const socket = useWebSocket();
   const dispatch = useDispatch();
-  const { activeRoom, messages, rooms, createRoomModalOpen } = useSelector(
-    (state) => state.chat
-  );
+  const { activeRoom, messages, rooms, createRoomModalOpen, hasMoreMessages } =
+    useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.auth);
   const [inputValue, setInputValue] = useState("");
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     if (socket && activeRoom) {
       socket.emit("joinRoom", activeRoom?.id);
 
-      // Listen for messages from the room
       socket.on("message", (newMessage) => {
-        console.log("NEW MESSAGE", newMessage);
-
         dispatch(
           addSingleMessage({
             message: newMessage,
@@ -54,16 +53,59 @@ const Dashboard = () => {
     dispatch(getRooms());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!activeRoom) return;
+    dispatch(getRoomMessages({ roomId: activeRoom.id }));
+  }, [dispatch, activeRoom]);
+
   const activeRoomHandler = ({ room }) => {
+    dispatch(setRoomMessages({ messages: [] }));
     dispatch(setActiveRoom({ room }));
   };
 
   const handleSendMessage = () => {
     socket.emit("message", { room: activeRoom?.id, message: inputValue });
-
-    console.log("user", user);
     setInputValue("");
+    if (messagesContainerRef) {
+      messagesContainerRef.current?.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (messagesContainerRef.current) {
+        const { scrollTop } = messagesContainerRef.current;
+        if (scrollTop === 0 && hasMoreMessages) {
+          dispatch(
+            getRoomMessages({ roomId: activeRoom.id, offset: messages.length })
+          );
+        }
+      }
+    };
+
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [dispatch, activeRoom, messages, hasMoreMessages]);
+
+  useEffect(() => {
+    if (messages.length <= 20) {
+      messagesContainerRef.current?.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   return (
     <div className="HULK-chat">
@@ -136,7 +178,10 @@ const Dashboard = () => {
             <Button style={{ backgroundColor: "#F96C6C" }}>Leave room</Button>
           </div>
         )}
-        <div className="HULK-chat-main-content-messages">
+        <div
+          className="HULK-chat-main-content-messages"
+          ref={messagesContainerRef}
+        >
           {!activeRoom && (
             <span className="HULK-chat-main-content-messages-no-room">
               Select a room to start chatting!

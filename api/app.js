@@ -8,6 +8,7 @@ const passport = require("passport");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
+const messagesRoutes = require("./routes/messagesRoutes");
 const socketAuth = require("./middlewares/socketAuthMiddleware");
 const Message = require("./models/Message");
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/", userRoutes);
 app.use("/", authRoutes);
 app.use("/", roomRoutes);
+app.use("/", messagesRoutes);
 
 const io = socketIo(server, {
   cors: {

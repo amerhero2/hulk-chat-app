@@ -11,6 +11,10 @@ export const SET_CREATE_ROOM_MODAL_OPEN = "SET_CREATE_ROOM_MODAL_OPEN";
 export const SET_GET_ROOMS_LOADING = "SET_GET_ROOMS_LOADING";
 export const GET_ROOMS_SUCCESS = "GET_ROOMS_SUCCESS";
 export const GET_ROOMS_FAILURE = "GET_ROOMS_FAILURE";
+export const SET_ROOM_MESSAGES_LOADING = "SET_ROOM_MESSAGES_LOADING";
+export const SET_ROOM_MESSAGES = "SET_ROOM_MESSAGES";
+export const GET_ROOM_MESSAGES_SUCCESS = "GET_ROOM_MESSAGES_SUCCESS";
+export const GET_ROOM_MESSAGES_FAILURE = "GET_ROOM_MESSAGES_FAILURE";
 
 export const createRoom = ({ label }) => {
   return async (dispatch) => {
@@ -52,6 +56,29 @@ export const getRooms = () => {
   };
 };
 
+export const getRoomMessages = ({ roomId, offset = 0 }) => {
+  return async (dispatch) => {
+    dispatch({ type: SET_ROOM_MESSAGES_LOADING });
+    try {
+      const response = await HulkAxios.get(
+        `/messages?roomId=${roomId}&offset=${offset}&limit=20`
+      );
+
+      dispatch({
+        type: GET_ROOM_MESSAGES_SUCCESS,
+        payload: response.data?.messages?.messages,
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_ROOM_MESSAGES_FAILURE,
+        payload: error.response
+          ? error.response.data
+          : { message: "Network error" },
+      });
+    }
+  };
+};
+
 export const setActiveRoom = ({ room }) => ({
   type: SET_ACTIVE_ROOM,
   payload: room,
@@ -65,4 +92,9 @@ export const addSingleMessage = ({ message }) => ({
 export const setCreateRoomModalOpen = ({ isOpen }) => ({
   type: SET_CREATE_ROOM_MODAL_OPEN,
   payload: isOpen,
+});
+
+export const setRoomMessages = ({ messages }) => ({
+  type: SET_ROOM_MESSAGES,
+  payload: messages,
 });

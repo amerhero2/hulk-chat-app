@@ -7,6 +7,8 @@ import {
   SET_CREATE_ROOM_MODAL_OPEN,
   GET_ROOMS_SUCCESS,
   SET_GET_ROOMS_LOADING,
+  GET_ROOM_MESSAGES_SUCCESS,
+  SET_ROOM_MESSAGES,
 } from "../actions/chatActions";
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
   roomsLoading: false,
   users: false,
   messages: [],
+  hasMoreMessages: false,
   createRoomModalOpen: false,
 };
 
@@ -72,6 +75,20 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         rooms: action.payload,
         roomsLoading: false,
+      };
+
+    case SET_ROOM_MESSAGES:
+      return {
+        ...state,
+        messages: action.payload,
+      };
+
+    case GET_ROOM_MESSAGES_SUCCESS:
+      const newMessagesList = [...action.payload, ...state.messages];
+      return {
+        ...state,
+        messages: newMessagesList,
+        hasMoreMessages: action.payload.length < 20 ? false : true,
       };
 
     default:

@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.sequelize.query(`
       CREATE TABLE IF NOT EXISTS messages (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        message VARCHAR(255) NOT NULL UNIQUE,
+        message VARCHAR(255) NOT NULL,
         user_id INT NOT NULL,
         room_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

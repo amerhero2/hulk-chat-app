@@ -35,9 +35,4 @@ const Message = sequelize.define(
   }
 );
 
-Message.associate = (models) => {
-  Message.belongsTo(models.User, { foreignKey: "user_id" });
-  Message.belongsTo(models.Room, { foreignKey: "room_id" });
-};
-
 module.exports = Message;
