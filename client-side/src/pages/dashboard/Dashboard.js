@@ -8,6 +8,7 @@ import {
   addSingleMessage,
   setActiveRoom,
   setCreateRoomModalOpen,
+  getRooms,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -48,6 +49,10 @@ const Dashboard = () => {
       };
     }
   }, [socket, activeRoom, dispatch]);
+
+  useEffect(() => {
+    dispatch(getRooms());
+  }, [dispatch]);
 
   const activeRoomHandler = ({ room }) => {
     dispatch(setActiveRoom({ room }));

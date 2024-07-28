@@ -17,4 +17,14 @@ async function createRoom({ label }) {
   }
 }
 
-module.exports = { createRoom };
+async function getRooms() {
+  try {
+    const rooms = await Room.findAll();
+
+    return rooms;
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = { createRoom, getRooms };

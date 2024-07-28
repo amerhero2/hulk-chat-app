@@ -8,6 +8,9 @@ export const SET_CREATE_ROOM_LOADING = "SET_NEW_ROOM_LOADING";
 export const CREATE_ROOM_SUCCESS = "CREATE_ROOM_SUCCESS";
 export const CREATE_ROOM_FAILURE = "CREATE_ROOM_FAILURE";
 export const SET_CREATE_ROOM_MODAL_OPEN = "SET_CREATE_ROOM_MODAL_OPEN";
+export const SET_GET_ROOMS_LOADING = "SET_GET_ROOMS_LOADING";
+export const GET_ROOMS_SUCCESS = "GET_ROOMS_SUCCESS";
+export const GET_ROOMS_FAILURE = "GET_ROOMS_FAILURE";
 
 export const createRoom = ({ label }) => {
   return async (dispatch) => {
@@ -21,6 +24,26 @@ export const createRoom = ({ label }) => {
     } catch (error) {
       dispatch({
         type: CREATE_ROOM_FAILURE,
+        payload: error.response
+          ? error.response.data
+          : { message: "Network error" },
+      });
+    }
+  };
+};
+
+export const getRooms = () => {
+  return async (dispatch) => {
+    dispatch({ type: SET_GET_ROOMS_LOADING });
+    try {
+      const response = await HulkAxios.get("/rooms");
+      dispatch({
+        type: GET_ROOMS_SUCCESS,
+        payload: response.data?.rooms,
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_ROOMS_FAILURE,
         payload: error.response
           ? error.response.data
           : { message: "Network error" },
