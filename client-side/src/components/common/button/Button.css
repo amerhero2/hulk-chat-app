@@ -13,3 +13,11 @@
 .HULK-button:hover {
   background-color: #19827c;
 }
+
+.HULK-button-disabled {
+  background-color: #afb0b0;
+  cursor: not-allowed;
+}
+.HULK-button-disabled:hover {
+  background-color: #afb0b0;
+}

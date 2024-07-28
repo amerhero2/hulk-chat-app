@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (socket && activeRoom) {
-      socket.emit("joinRoom", activeRoom);
+      socket.emit("joinRoom", activeRoom?.id);
 
       // Listen for messages from the room
       socket.on("message", (newMessage) => {
@@ -50,12 +50,12 @@ const Dashboard = () => {
     }
   }, [socket, activeRoom, dispatch]);
 
-  const activeRoomHandler = ({ id }) => {
-    dispatch(setActiveRoom({ id }));
+  const activeRoomHandler = ({ room }) => {
+    dispatch(setActiveRoom({ room }));
   };
 
   const handleSendMessage = () => {
-    socket.emit("message", { room: activeRoom, message: inputValue });
+    socket.emit("message", { room: activeRoom?.id, message: inputValue });
 
     console.log("user", user);
     setInputValue("");
@@ -73,11 +73,11 @@ const Dashboard = () => {
                 <div
                   key={room.id}
                   onClick={() => {
-                    activeRoomHandler({ id: room?.id });
+                    activeRoomHandler({ room });
                   }}
                   className={classNames("HULK-chat-side-content-rooms-room", {
                     "HULK-chat-side-content-rooms-room-active":
-                      room.id === activeRoom,
+                      room.id === activeRoom?.id,
                   })}
                 >
                   <div>{room.label}</div>
@@ -114,7 +114,25 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="HULK-chat-main-content">
+        {activeRoom && (
+          <div className="HULK-chat-main-content-room-header">
+            <span>Current room: {activeRoom.label}</span>
+            <Button style={{ backgroundColor: "#F96C6C" }}>Leave room</Button>
+          </div>
+        )}
         <div className="HULK-chat-main-content-messages">
+          {!activeRoom && (
+            <span className="HULK-chat-main-content-messages-no-room">
+              Select a room to start chatting!
+            </span>
+          )}
+
+          {!!activeRoom && !messages.length && (
+            <span className="HULK-chat-main-content-messages-no-messages">
+              Send a message and start chatting!
+            </span>
+          )}
+
           {messages.map((msg) => {
             return msg.user?.id ? (
               <div
@@ -140,11 +158,13 @@ const Dashboard = () => {
             onChange={(e) => setInputValue(e.target.value)}
             value={inputValue}
             placeholder="Type a message here..."
+            disabled={!activeRoom}
           />
           <Button
             onClick={() => {
               handleSendMessage();
             }}
+            disabled={!activeRoom}
           >
             Send
           </Button>

@@ -3,9 +3,9 @@ export const SET_ACTIVE_ROOM = "SET_ACTIVE_ROOM";
 export const SET_USERS_LIST = "SET_USERS_LIST";
 export const ADD_SINGLE_MESSAGE = "ADD_SINGLE_MESSAGE";
 
-export const setActiveRoom = ({ id }) => ({
+export const setActiveRoom = ({ room }) => ({
   type: SET_ACTIVE_ROOM,
-  payload: id,
+  payload: room,
 });
 
 export const addSingleMessage = ({ message }) => ({

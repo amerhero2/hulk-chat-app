@@ -11,10 +11,21 @@
 }
 
 .HULK-chat-main-content {
-  padding: 20px;
   display: flex;
   flex: 1;
   flex-direction: column;
+}
+
+.HULK-chat-main-content-room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #fff;
+  color: #504e4e;
+  border-top: 1px solid rgb(229, 225, 225);
+  padding: 12px;
 }
 
 .HULK-chat-main-content-messages {
@@ -22,10 +33,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 10px;
+  padding: 30px;
   overflow: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.HULK-chat-main-content-messages-no-room,
+.HULK-chat-main-content-messages-no-messages {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 }
 
 .HULK-chat-main-content-messages::-webkit-scrollbar {
@@ -80,7 +99,8 @@
 .HULK-chat-main-content-message-input {
   display: flex;
   gap: 12px;
-  width: 100%;
+  padding: 20px;
+  max-width: 100%;
 }
 
 .HULK-chat-main-content-message-input input {
