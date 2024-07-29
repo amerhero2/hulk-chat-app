@@ -164,3 +164,9 @@
   border: 1px solid #35a8a2;
   background-color: #35a8a2;
 }
+
+@media screen and (max-width: 760px) {
+  .HULK-chat-side-content {
+    width: 100vw;
+  }
+}

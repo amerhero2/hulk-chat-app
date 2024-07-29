@@ -19,6 +19,7 @@ import moment from "moment";
 import RoomModal from "../../components/room-modal/roomModal";
 import { getUserDetails } from "../../redux/actions/authActions";
 import _ from "lodash";
+import useIsMobile from "../../hooks/useIsMobile";
 
 const Dashboard = () => {
   const socket = useWebSocket();
@@ -34,6 +35,7 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -122,132 +124,136 @@ const Dashboard = () => {
 
   return (
     <div className="HULK-chat">
-      <div className="HULK-chat-side-content">
-        <div className="HULK-chat-side-content-rooms-wrapper">
-          <Button
-            onClick={() => {
-              dispatch(setCreateRoomModalOpen({ isOpen: true }));
-            }}
-          >
-            + New room
-          </Button>
-          <Divider label="Rooms" />
-          <RoomModal
-            isOpen={createRoomModalOpen}
-            onClose={() => {
-              dispatch(setCreateRoomModalOpen({ isOpen: false }));
-            }}
-          />
-          <div className="HULK-chat-side-content-rooms">
-            {rooms.map((room) => {
-              return (
-                <div
-                  key={room.id}
-                  onClick={() => {
-                    activeRoomHandler({ room });
-                  }}
-                  className={classNames("HULK-chat-side-content-rooms-room", {
-                    "HULK-chat-side-content-rooms-room-active":
-                      room.id === activeRoom?.id,
-                  })}
-                >
-                  <div>{room.label}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="HULK-chat-side-content-users-wrapper">
-          <Divider label="Users" />
-          <div className="HULK-chat-side-content-users">
-            {users.map((user) => {
-              return (
-                <div
-                  key={user?.id}
-                  className="HULK-chat-side-content-users-user"
-                >
-                  <div>
-                    {user.firstName} {user.lastName}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="HULK-chat-main-content">
-        {activeRoom && (
-          <div className="HULK-chat-main-content-room-header">
-            <span>Current room: {activeRoom.label}</span>
+      {(!isMobile || (isMobile && !activeRoom)) && (
+        <div className="HULK-chat-side-content">
+          <div className="HULK-chat-side-content-rooms-wrapper">
             <Button
-              style={{ backgroundColor: "#F96C6C" }}
               onClick={() => {
-                activeRoomHandler({ room: null });
+                dispatch(setCreateRoomModalOpen({ isOpen: true }));
               }}
             >
-              Leave room
+              + New room
+            </Button>
+            <Divider label="Rooms" />
+            <RoomModal
+              isOpen={createRoomModalOpen}
+              onClose={() => {
+                dispatch(setCreateRoomModalOpen({ isOpen: false }));
+              }}
+            />
+            <div className="HULK-chat-side-content-rooms">
+              {rooms.map((room) => {
+                return (
+                  <div
+                    key={room.id}
+                    onClick={() => {
+                      activeRoomHandler({ room });
+                    }}
+                    className={classNames("HULK-chat-side-content-rooms-room", {
+                      "HULK-chat-side-content-rooms-room-active":
+                        room.id === activeRoom?.id,
+                    })}
+                  >
+                    <div>{room.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="HULK-chat-side-content-users-wrapper">
+            <Divider label="Users" />
+            <div className="HULK-chat-side-content-users">
+              {users.map((user) => {
+                return (
+                  <div
+                    key={user?.id}
+                    className="HULK-chat-side-content-users-user"
+                  >
+                    <div>
+                      {user.firstName} {user.lastName}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+      {(!isMobile || (isMobile && activeRoom)) && (
+        <div className="HULK-chat-main-content">
+          {activeRoom && (
+            <div className="HULK-chat-main-content-room-header">
+              <span>Current room: {activeRoom.label}</span>
+              <Button
+                style={{ backgroundColor: "#F96C6C" }}
+                onClick={() => {
+                  activeRoomHandler({ room: null });
+                }}
+              >
+                Leave room
+              </Button>
+            </div>
+          )}
+          <div
+            className="HULK-chat-main-content-messages"
+            ref={messagesContainerRef}
+          >
+            {!activeRoom && (
+              <span className="HULK-chat-main-content-messages-no-room">
+                Select a room to start chatting!
+              </span>
+            )}
+
+            {!!activeRoom && !messages.length && (
+              <span className="HULK-chat-main-content-messages-no-messages">
+                Send a message and start chatting!
+              </span>
+            )}
+
+            {messages.map((msg) => {
+              return msg.user?.id ? (
+                <div
+                  key={msg.id}
+                  className={classNames("HULK-message", {
+                    "my-message": msg.user?.id === user?.id,
+                    "other-message": msg.user?.id !== user?.id,
+                  })}
+                >
+                  <span className="HULK-message-user-info">
+                    {msg.user?.firstName} {msg.user?.lastName},{" "}
+                    {moment(msg?.created_at).calendar()}
+                  </span>
+                  <span className="HULK-message-content">{msg.message}</span>
+                </div>
+              ) : (
+                <span className="HULK-join-leave-message">{msg.message}</span>
+              );
+            })}
+          </div>
+          <div className="HULK-chat-main-content-message-input">
+            <input
+              onChange={(e) => setInputValue(e.target.value)}
+              value={inputValue}
+              placeholder="Type a message here..."
+              disabled={!activeRoom}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+            />
+            <Button
+              onClick={() => {
+                handleSendMessage();
+              }}
+              disabled={!activeRoom}
+            >
+              Send
             </Button>
           </div>
-        )}
-        <div
-          className="HULK-chat-main-content-messages"
-          ref={messagesContainerRef}
-        >
-          {!activeRoom && (
-            <span className="HULK-chat-main-content-messages-no-room">
-              Select a room to start chatting!
-            </span>
-          )}
-
-          {!!activeRoom && !messages.length && (
-            <span className="HULK-chat-main-content-messages-no-messages">
-              Send a message and start chatting!
-            </span>
-          )}
-
-          {messages.map((msg) => {
-            return msg.user?.id ? (
-              <div
-                key={msg.id}
-                className={classNames("HULK-message", {
-                  "my-message": msg.user?.id === user?.id,
-                  "other-message": msg.user?.id !== user?.id,
-                })}
-              >
-                <span className="HULK-message-user-info">
-                  {msg.user?.firstName} {msg.user?.lastName},{" "}
-                  {moment().calendar()}
-                </span>
-                <span className="HULK-message-content">{msg.message}</span>
-              </div>
-            ) : (
-              <span className="HULK-join-leave-message">{msg.message}</span>
-            );
-          })}
         </div>
-        <div className="HULK-chat-main-content-message-input">
-          <input
-            onChange={(e) => setInputValue(e.target.value)}
-            value={inputValue}
-            placeholder="Type a message here..."
-            disabled={!activeRoom}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-          />
-          <Button
-            onClick={() => {
-              handleSendMessage();
-            }}
-            disabled={!activeRoom}
-          >
-            Send
-          </Button>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
