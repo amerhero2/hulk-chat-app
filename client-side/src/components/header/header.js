@@ -4,6 +4,7 @@ import Button from "../common/button/Button";
 import { logoutUser } from "../../redux/actions/authActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import PermissionGate from "../hoc/PermissionGate";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -15,15 +16,17 @@ const Header = () => {
         <span className="HULK-header-label-left">HULK</span>
         <span className="HULK-header-label-right">chat</span>
       </div>
-      <Button
-        onClick={() => {
-          dispatch(logoutUser());
-          navigate("/login");
-        }}
-        style={{ backgroundColor: "#F96C6C" }}
-      >
-        Log out
-      </Button>
+      <PermissionGate>
+        <Button
+          onClick={() => {
+            dispatch(logoutUser());
+            navigate("/login");
+          }}
+          style={{ backgroundColor: "#F96C6C" }}
+        >
+          Log out
+        </Button>
+      </PermissionGate>
     </div>
   );
 };
