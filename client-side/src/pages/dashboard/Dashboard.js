@@ -17,7 +17,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import RoomModal from "../../components/room-modal/roomModal";
-import { getUserDetails } from "../../redux/actions/authActions";
 import _ from "lodash";
 import useIsMobile from "../../hooks/useIsMobile";
 
@@ -36,10 +35,6 @@ const Dashboard = () => {
   const [inputValue, setInputValue] = useState("");
   const messagesContainerRef = useRef(null);
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    dispatch(getUserDetails());
-  }, [dispatch]);
 
   useEffect(() => {
     if (socket) {

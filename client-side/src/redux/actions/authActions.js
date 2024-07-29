@@ -6,6 +6,7 @@ export const SET_LOGIN_LOADING = "SET_LOGIN_LOADING";
 export const REGISTER_FAILURE = "REGISTER_FAILURE";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 export const SET_USER_DATA = "SET_USER_DATA";
+export const SET_GET_USER_LOADING = "SET_GET_USER_LOADING";
 export const LOGOUT = "LOGOUT";
 
 export const registerUser = (userData) => async (dispatch) => {
@@ -49,6 +50,11 @@ export const loginUser =
 
 export const getUserDetails = () => async (dispatch) => {
   try {
+    dispatch({
+      type: SET_GET_USER_LOADING,
+      payload: true,
+    });
+
     const response = await HulkAxios.get("/user");
     dispatch({
       type: SET_USER_DATA,
@@ -56,6 +62,11 @@ export const getUserDetails = () => async (dispatch) => {
     });
   } catch (error) {
     // TODO HANDLE ERROR
+
+    dispatch({
+      type: SET_GET_USER_LOADING,
+      payload: false,
+    });
     console.log("error");
   }
 };

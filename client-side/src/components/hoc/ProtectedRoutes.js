@@ -1,12 +1,21 @@
-import React from "react";
-import Cookies from "js-cookie";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router-dom";
+import { getUserDetails } from "../../redux/actions/authActions";
 
 const ProtectedRoutes = () => {
-  // TODO check token validity if we decide to keep it in cookies
-  const token = Cookies.get("token");
+  const dispatch = useDispatch();
+  const { user, userLoading } = useSelector((state) => state.auth);
 
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, [dispatch]);
+
+  if (userLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return user ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;
