@@ -5,7 +5,7 @@ import * as Yup from "yup";
 // import axios from '../axios';
 import Input from "../common/input/Input";
 import Button from "../common/button/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./RegisterForm.css";
 import { registerUser } from "../../redux/actions/authActions";
 
@@ -20,7 +20,6 @@ const RegisterSchema = Yup.object().shape({
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
@@ -30,7 +29,6 @@ const RegisterForm = () => {
       console.error(error);
     } finally {
       setSubmitting(false);
-      navigate("/dashboard");
     }
   };
 

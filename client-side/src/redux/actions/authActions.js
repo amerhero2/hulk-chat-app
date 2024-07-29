@@ -13,6 +13,7 @@ export const registerUser = (userData) => async (dispatch) => {
   dispatch({ type: SET_REGISTER_LOADING });
   try {
     const response = await HulkAxios.post("/register", userData);
+    Cookies.set("token", response.data.token, { expires: 1 / 24 });
     dispatch({
       type: SET_USER_DATA,
       payload: response.data,

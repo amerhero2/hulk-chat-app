@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const userService = require("../services/userService");
+const { generateAccessToken } = require("../utils/jwt");
 
 async function registerUser(req, res, next) {
   const errors = validationResult(req);
@@ -25,6 +26,7 @@ async function registerUser(req, res, next) {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
       },
+      token: generateAccessToken(newUser),
     });
   } catch (error) {
     console.error("Error registering user:", error);

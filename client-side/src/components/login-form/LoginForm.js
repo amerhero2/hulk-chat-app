@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import "./LoginForm.css";
 import Input from "../common/input/Input";
 import Button from "../common/button/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/actions/authActions";
 
@@ -17,7 +17,6 @@ const LoginSchema = Yup.object().shape({
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
@@ -26,7 +25,6 @@ const LoginForm = () => {
       console.error(error);
     } finally {
       setSubmitting(false);
-      navigate("/dashboard");
     }
   };
 
