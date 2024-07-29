@@ -1,0 +1,13 @@
+.HULK-chat-main-content-message-input {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  max-width: 100%;
+}
+
+.HULK-chat-main-content-message-input input {
+  padding: 10px;
+  border: 1px solid #e4d8d8;
+  border-radius: 4px;
+  flex: 1;
+}

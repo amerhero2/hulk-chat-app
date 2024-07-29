@@ -1,0 +1,16 @@
+.HULK-chat-side-content-users-wrapper {
+  margin-top: 20px;
+}
+
+.HULK-chat-side-content-users {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+.HULK-chat-side-content-users-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

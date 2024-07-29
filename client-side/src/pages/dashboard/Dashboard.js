@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useWebSocket } from "../../contexts/WebSocketContext";
 import "./Dashboard.css";
 import Button from "../../components/common/button/Button";
@@ -8,10 +8,8 @@ import {
   addSingleMessage,
   setActiveRoom,
   setCreateRoomModalOpen,
-  getRooms,
   getRoomMessages,
   setRoomMessages,
-  getUsers,
   addSingleRoom,
 } from "../../redux/actions/chatActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,22 +17,20 @@ import moment from "moment";
 import RoomModal from "../../components/room-modal/roomModal";
 import _ from "lodash";
 import useIsMobile from "../../hooks/useIsMobile";
+import Users from "../../components/users/users";
+import Rooms from "../../components/rooms/rooms";
+import SendMessageInput from "../../components/send-message-input/sendMessageInput";
 
 const Dashboard = () => {
-  const socket = useWebSocket();
   const dispatch = useDispatch();
-  const {
-    activeRoom,
-    messages,
-    rooms,
-    createRoomModalOpen,
-    hasMoreMessages,
-    users,
-  } = useSelector((state) => state.chat);
-  const { user } = useSelector((state) => state.auth);
-  const [inputValue, setInputValue] = useState("");
-  const messagesContainerRef = useRef(null);
+  const socket = useWebSocket();
   const isMobile = useIsMobile();
+
+  const { user } = useSelector((state) => state.auth);
+  const { activeRoom, messages, createRoomModalOpen, hasMoreMessages } =
+    useSelector((state) => state.chat);
+
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     if (socket) {
@@ -61,14 +57,6 @@ const Dashboard = () => {
   }, [socket, activeRoom, dispatch]);
 
   useEffect(() => {
-    dispatch(getRooms());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (!activeRoom) return;
     dispatch(getRoomMessages({ roomId: activeRoom.id }));
   }, [dispatch, activeRoom]);
@@ -76,11 +64,6 @@ const Dashboard = () => {
   const activeRoomHandler = ({ room }) => {
     dispatch(setRoomMessages({ messages: [] }));
     dispatch(setActiveRoom({ room }));
-  };
-
-  const handleSendMessage = () => {
-    socket.emit("message", { room: activeRoom?.id, message: inputValue });
-    setInputValue("");
   };
 
   const handleScroll = _.debounce(() => {
@@ -136,42 +119,9 @@ const Dashboard = () => {
                 dispatch(setCreateRoomModalOpen({ isOpen: false }));
               }}
             />
-            <div className="HULK-chat-side-content-rooms">
-              {rooms.map((room) => {
-                return (
-                  <div
-                    key={room.id}
-                    onClick={() => {
-                      activeRoomHandler({ room });
-                    }}
-                    className={classNames("HULK-chat-side-content-rooms-room", {
-                      "HULK-chat-side-content-rooms-room-active":
-                        room.id === activeRoom?.id,
-                    })}
-                  >
-                    <div>{room.label}</div>
-                  </div>
-                );
-              })}
-            </div>
+            <Rooms />
           </div>
-          <div className="HULK-chat-side-content-users-wrapper">
-            <Divider label="Users" />
-            <div className="HULK-chat-side-content-users">
-              {users.map((user) => {
-                return (
-                  <div
-                    key={user?.id}
-                    className="HULK-chat-side-content-users-user"
-                  >
-                    <div>
-                      {user.firstName} {user.lastName}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <Users />
         </div>
       )}
       {(!isMobile || (isMobile && activeRoom)) && (
@@ -225,28 +175,7 @@ const Dashboard = () => {
               );
             })}
           </div>
-          <div className="HULK-chat-main-content-message-input">
-            <input
-              onChange={(e) => setInputValue(e.target.value)}
-              value={inputValue}
-              placeholder="Type a message here..."
-              disabled={!activeRoom}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-            />
-            <Button
-              onClick={() => {
-                handleSendMessage();
-              }}
-              disabled={!activeRoom}
-            >
-              Send
-            </Button>
-          </div>
+          <SendMessageInput />
         </div>
       )}
     </div>
