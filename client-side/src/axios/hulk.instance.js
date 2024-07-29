@@ -24,4 +24,35 @@ instance.interceptors.request.use(
   }
 );
 
+instance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const response = await instance.post(
+          "/refresh-token",
+          {},
+          { withCredentials: true }
+        );
+        const { accessToken } = response.data;
+
+        Cookies.remove("token");
+        Cookies.set("token", accessToken, { expires: 1 / 24 });
+
+        instance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
+        return instance(originalRequest);
+      } catch (refreshError) {
+        console.error("Refresh token failed", refreshError);
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default instance;

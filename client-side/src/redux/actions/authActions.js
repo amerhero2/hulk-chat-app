@@ -32,7 +32,7 @@ export const loginUser =
     dispatch({ type: SET_LOGIN_LOADING });
     try {
       const response = await HulkAxios.post("/login", { email, password });
-      Cookies.set("token", response.data.token, { expires: 5 });
+      Cookies.set("token", response.data.token, { expires: 1 / 24 });
       dispatch({
         type: SET_USER_DATA,
         payload: response.data,
