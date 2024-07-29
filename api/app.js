@@ -11,6 +11,7 @@ const roomRoutes = require("./routes/roomRoutes");
 const messagesRoutes = require("./routes/messagesRoutes");
 const socketAuth = require("./middlewares/socketAuthMiddleware");
 const Message = require("./models/Message");
+const rateLimit = require("./middlewares/rateLimitMiddleware");
 require("dotenv").config();
 
 const { createClient } = require("ioredis");
@@ -55,8 +56,10 @@ const io = socketIo(server, {
 
 // Attach the adapter to Socket.IO
 io.adapter(createAdapter(pubClient, subClient));
-
 io.use(socketAuth);
+
+const rateLimitMiddleware = rateLimit(pubClient, 60 * 1000, 10);
+io.use(rateLimitMiddleware);
 
 io.on("connection", (socket) => {
   console.log("A user connected");
@@ -77,13 +80,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", async (data) => {
-    const { room, message } = data;
+    rateLimitMiddleware(socket, async (err) => {
+      if (err) {
+        console.error("Rate limit error:", err);
+        return;
+      }
 
-    await Message.create({ message, userId: socket.user.id, roomId: room });
+      const { room, message } = data;
 
-    console.log("USER :::::", socket.user);
-    console.log(`Message to room ${room}: ${message}`);
-    io.to(room).emit("message", { message, room, user: socket.user });
+      try {
+        await Message.create({ message, userId: socket.user.id, roomId: room });
+        console.log("USER :::::", socket.user);
+        console.log(`Message to room ${room}: ${message}`);
+        io.to(room).emit("message", { message, room, user: socket.user });
+      } catch (error) {
+        console.error("Error saving message:", error);
+      }
+    });
   });
 
   socket.on("disconnect", () => {
