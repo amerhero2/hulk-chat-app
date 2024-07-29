@@ -10,7 +10,7 @@ import {
 
 const initialState = {
   user: null,
-  userLoading: true,
+  userLoading: false,
   registerLoading: false,
   loginLoading: false,
   registerError: null,
