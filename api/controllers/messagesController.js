@@ -17,9 +17,7 @@ async function getMessages(req, res, next) {
       messages,
     });
   } catch (error) {
-    console.error("Error getting messages:", error);
     next(error);
-    return res.status(500).json({ error: "Internal server error" });
   }
 }
 

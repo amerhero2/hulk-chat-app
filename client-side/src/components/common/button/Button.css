@@ -1,4 +1,8 @@
 .HULK-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   background-color: #35a8a2;
   color: #fafafa;
   font-size: 18px;

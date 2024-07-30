@@ -47,8 +47,6 @@ const chatReducer = (state = initialState, action) => {
 
     case ADD_SINGLE_MESSAGE:
       const messages = [...state.messages, action.payload];
-
-      console.log("messages", messages);
       return {
         ...state,
         messages,
@@ -108,7 +106,6 @@ const chatReducer = (state = initialState, action) => {
       };
 
     case GET_USERS_SUCCESS:
-      console.log("action.payload", action.payload);
       return {
         ...state,
         users: action.payload,

@@ -38,6 +38,7 @@ const authReducer = (state = initialState, action) => {
         registerLoading: false,
         userLoading: false,
         loginLoading: false,
+        loginError: null,
       };
 
     case REGISTER_FAILURE:

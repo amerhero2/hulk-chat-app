@@ -27,7 +27,6 @@ function App() {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    console.log("USER", user);
     if (!user) {
       dispatch(getUserDetails());
     }

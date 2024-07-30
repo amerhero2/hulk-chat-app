@@ -1,8 +1,7 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-// import axios from '../axios';
 import Input from "../common/input/Input";
 import Button from "../common/button/Button";
 import { Link } from "react-router-dom";
@@ -20,10 +19,10 @@ const RegisterSchema = Yup.object().shape({
 
 const RegisterForm = () => {
   const dispatch = useDispatch();
+  const { registerError, registerLoading } = useSelector((state) => state.auth);
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-      console.log(values);
       dispatch(registerUser(values));
     } catch (error) {
       console.error(error);
@@ -48,10 +47,17 @@ const RegisterForm = () => {
             </div>
             <Input name="email" label="Email *" />
             <Input name="password" label="Password *" />
-            <Button disabled={isSubmitting}>Register</Button>
+            <Button disabled={isSubmitting} isLoading={registerLoading}>
+              Register
+            </Button>
           </Form>
         )}
       </Formik>
+      {registerError && (
+        <span className="HULK-register-form-account-error">
+          {registerError}
+        </span>
+      )}
       <span className="HULK-register-form-account-question">
         Already have an account? <Link to="/login">Log in</Link>
       </span>

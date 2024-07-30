@@ -1,10 +1,12 @@
 import React from "react";
 import "./Button.css";
 import classNames from "classnames";
+import Loader from "../loader/loader";
 
 const Button = ({
   type = "submit",
   disabled = false,
+  isLoading = false,
   children,
   onClick,
   style,
@@ -19,6 +21,7 @@ const Button = ({
       onClick={onClick}
       style={style}
     >
+      {isLoading && <Loader />}
       {children}
     </button>
   );

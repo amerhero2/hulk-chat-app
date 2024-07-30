@@ -5,7 +5,7 @@ import "./LoginForm.css";
 import Input from "../common/input/Input";
 import Button from "../common/button/Button";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/actions/authActions";
 
 const LoginSchema = Yup.object().shape({
@@ -17,6 +17,7 @@ const LoginSchema = Yup.object().shape({
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+  const { loginError, loginLoading } = useSelector((state) => state.auth);
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
@@ -48,10 +49,15 @@ const LoginForm = () => {
               name="password"
               placeholder="Enter password here"
             />
-            <Button disabled={isSubmitting}>Login</Button>
+            <Button disabled={isSubmitting} isLoading={loginLoading}>
+              Login
+            </Button>
           </Form>
         )}
       </Formik>
+      {loginError && (
+        <span className="HULK-login-form-account-error">{loginError}</span>
+      )}
       <span className="HULK-login-form-account-question">
         Don't have an account? <Link to="/register">Register</Link>
       </span>

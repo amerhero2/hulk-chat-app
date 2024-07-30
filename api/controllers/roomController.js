@@ -17,9 +17,7 @@ async function createRoom(req, res, next) {
       room,
     });
   } catch (error) {
-    console.error("Error creating room:", error);
     next(error);
-    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -30,9 +28,7 @@ async function getRooms(req, res, next) {
       rooms,
     });
   } catch (error) {
-    console.error("Error creating room:", error);
     next(error);
-    return res.status(500).json({ error: "Internal server error" });
   }
 }
 

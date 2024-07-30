@@ -31,6 +31,14 @@
   align-items: center;
   justify-content: center;
 }
+.HULK-register-form-account-error {
+  padding: 9px;
+  background-color: #ff9797;
+  display: flex;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
 
 @media screen and (min-width: 760px) {
   .HULK-register-form-wrapper {

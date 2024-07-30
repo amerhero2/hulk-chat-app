@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const messagesRoutes = require("./routes/messagesRoutes");
 const socketService = require("./socketService/socketService");
+const errorHandler = require("./middlewares/errorHandlerMiddleware");
 
 require("dotenv").config();
 
@@ -28,6 +29,7 @@ app.use("/", userRoutes);
 app.use("/", authRoutes);
 app.use("/", roomRoutes);
 app.use("/", messagesRoutes);
+app.use(errorHandler);
 
 socketService(server);
 

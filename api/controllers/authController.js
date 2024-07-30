@@ -3,7 +3,7 @@ const User = require("../models/User");
 require("dotenv").config();
 const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
 
-async function login(req, res) {
+async function login(req, res, next) {
   const { email, password } = req.body;
 
   try {
@@ -37,8 +37,7 @@ async function login(req, res) {
 
     return res.status(200).json({ user: userData, token: accessToken });
   } catch (error) {
-    console.error("Error logging in:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return next(error);
   }
 }
 

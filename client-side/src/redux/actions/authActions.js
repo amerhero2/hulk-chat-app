@@ -21,9 +21,7 @@ export const registerUser = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: REGISTER_FAILURE,
-      payload: error.response
-        ? error.response.data
-        : { message: "Network error" },
+      payload: error?.response ? error.response?.data?.error : "Server error",
     });
   }
 };
@@ -42,9 +40,7 @@ export const loginUser =
     } catch (error) {
       dispatch({
         type: LOGIN_FAILURE,
-        payload: error.response
-          ? error.response.data
-          : { message: "Network error" },
+        payload: error?.response ? error.response?.data?.error : "Server error",
       });
     }
   };

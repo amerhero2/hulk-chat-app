@@ -29,20 +29,23 @@ async function registerUser(req, res, next) {
       token: generateAccessToken(newUser),
     });
   } catch (error) {
-    console.error("Error registering user:", error);
     next(error);
-    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
 async function getUserDetails(req, res, next) {
-  if (req.user) {
-    return res.status(200).json({
-      user: req.user,
-    });
-  } else {
-    next(error);
-    return res.status(500).json({ error: "User not found" });
+  try {
+    if (req.user) {
+      return res.status(200).json({
+        user: req.user,
+      });
+    } else {
+      const error = new Error("User not found!");
+      error.status = 400;
+      return next(error);
+    }
+  } catch (error) {
+    return next(error);
   }
 }
 
@@ -54,9 +57,7 @@ async function getUsers(req, res, next) {
       users,
     });
   } catch (error) {
-    console.error("Error getting users:", error);
     next(error);
-    return res.status(500).json({ error: "Internal server error" });
   }
 }
 module.exports = { registerUser, getUserDetails, getUsers };
