@@ -7,7 +7,11 @@ const rateLimit = require("../middlewares/rateLimitMiddleware");
 require("dotenv").config();
 
 const socketService = (server) => {
-  const redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOSTNAME}:6379`;
+  const REDISHOST = process.env.REDISHOST || "localhost";
+  const REDISPORT = process.env.REDISPORT || 6379;
+
+  const redisUrl = `redis://default:${REDISHOST}@redis-${REDISPORT}.c304.europe-west1-2.gce.cloud.redislabs.com:${REDISPORT}`;
+
   const pubClient = createClient(redisUrl);
   const subClient = pubClient.duplicate();
 
@@ -19,9 +23,17 @@ const socketService = (server) => {
     console.log("Subscriber connected to Redis");
   });
 
+  pubClient.on("error", (err) => {
+    console.error("Redis publisher error:", err);
+  });
+
+  subClient.on("error", (err) => {
+    console.error("Redis subscriber error:", err);
+  });
+
   const io = socketIo(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_ORIGIN,
       methods: ["GET", "POST"],
       credentials: true,
     },

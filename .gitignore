@@ -5,3 +5,4 @@ api/node_modules/
 # Ignore environment files
 client-side/.env
 api/.env
+api/app.yaml
