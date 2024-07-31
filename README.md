@@ -1,4 +1,5 @@
-hulk-chat-app
+HULK REALTIME CHAT APPLICATION
+App Url: https://hulk-chat-app-6amz.vercel.app/
 
 TECHNOLOGIES USED:
 1. React.js
